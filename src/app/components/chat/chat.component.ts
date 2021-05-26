@@ -9,36 +9,36 @@ import { ChatService } from '../../services/chat.service';
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
-  texto = '';
-  mensajes: any[] = [];
-
-  // elemento: HTMLElement;                            // Video. Marca un error (Subrayado en rojo)
-  // elemento!: HTMLElement;                           // Video. Provoca el error (2322)
+  public texto = '';
+  public mensajes: any[] = [];
+  // Son lo mismo que si se declararan public
+  // texto = '';
+  // mensajes: any[] = [];
+  // elemento: HTMLElement;          // Video. Marca un error (Subrayado en rojo)
+  // elemento!: HTMLElement;         // Video. Provoca el error (2322)
   // -----------------------------------------------------------------------------
   // Type 'HTMLElement | null' is not assignable to type 'HTMLElement'.
   // Type 'null' is not assignable to type 'HTMLElement'.ts(2322)
   // -----------------------------------------------------------------------------
-  // elemento: any;                                     // Own Test and Works Ok
-  private elemento: any;                                // Own Test and Works Ok
+  // elemento: any;                 // Own Test and Works Ok
+  private elemento: any;            // Own Test and Works Ok
   
-  // msgsSuscribed: Subscription;                   // Video. Marca un error
-  msgsSuscribed!: Subscription;                  // Video. Ya no marcar el error y funciona bien
+  // msgsSuscribed: Subscription;   // Video. Marca un error
+  msgsSuscribed!: Subscription;     // Video. Ya no marcar el error y funciona bien
   // msgsSuscribed: Subscription = Subscription.EMPTY; // Own Test and Works Ok
 
-  constructor( public chatService: ChatService ) { 
-    // this.
-  }
+  constructor( public chatService: ChatService ) {}
 
   ngOnInit(): void {
     this.msgsSuscribed = this.chatService.receiveNessages()
         .subscribe( msg => {
-          this.elemento = document.getElementById('chat-mensajes');
+           this.elemento = document.getElementById('chat-mensajes');
            this.mensajes.push( msg );
-           setTimeout(() => {             
+           setTimeout(() => { // Desplaza la lista de mensajes hasta abajo
               this.elemento.scrollTop = this.elemento.scrollHeight;
            }, 50);
-          console.log(msg);
-    });
+           console.log(msg);
+        });
   }
 
   ngOnDestroy(){
@@ -46,7 +46,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   enviar() {
-    // console.log('Mensaje enviado!', this.texto );
     if (this.texto.trim().length > 0) {
         this.chatService.sendMessage ( this.texto );    
     }

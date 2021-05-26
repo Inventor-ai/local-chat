@@ -9,20 +9,29 @@ const config: SocketIoConfig = { url: environment.webSocketURL, options: {} };
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './components/footer/footer.component';
+
 import { ChatComponent } from './components/chat/chat.component';
-// 29. Interfaz visual para enviar mensajes 1/2
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';  // 29. Interfaz visual para enviar mensajes 1/2
+
+import { ListaUsuariosComponent } from './components/lista-usuarios/lista-usuarios.component';
+import { LoginComponent } from './pages/login/login.component';
+import { MensajesComponent } from './pages/mensajes/mensajes.component';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     FooterComponent,
-    ChatComponent
+    ChatComponent,
+    ListaUsuariosComponent,
+    LoginComponent,
+    MensajesComponent
   ],
   imports: [
     BrowserModule, 
-    SocketIoModule.forRoot(config),
-    FormsModule  // 29. Interfaz visual para enviar mensajes 2/2
+    SocketIoModule.forRoot(config),  // ?? Lección...
+    FormsModule,                     // 29. Interfaz visual para enviar mensajes 2/2
+    AppRoutingModule                 // 37. Implementando un sistema de rutas en Angular
   ],
   providers: [],
   bootstrap: [AppComponent]
