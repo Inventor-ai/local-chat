@@ -6,7 +6,7 @@ export class UsuarioModel { // Así también lo sugirió el video
 }
 
 /*
-// As{i quedó en el video}
+// Así quedó en el video
 export class UsuarioModel {
 public nombre: string;
   constructor( nombre: string) {

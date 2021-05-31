@@ -12,22 +12,26 @@ export class MensajesComponent implements OnInit {
   constructor( public webSocketService: WebSocketService,
                private router: Router ) {} // 55. Logout - Cierre de sesión (Own)  
 
-  ngOnInit(): void {
-    if (!this.webSocketService.storageRead()) {
-        this.loginPage();
-    }
-  }
+  // ngOnInit(): void {
+    // Implementado para subsanar que en webSocketLogOut no se podía: this.usuario = null;
+    // if (!this.webSocketService.storageRead()) {
+    //     this.loginPage();
+    // }
+  // }
+
+  ngOnInit(): void { }  // Incluso puede descartarse
 
   salir() {
     console.log('Saliendo del chat...');
     // this.webSocketService.webSocketLogOut();  // Video aproximation
     this.webSocketService.webSocketLogOut()
-        .then ( ()=> { this.loginPage(); });
+        .then ( ()=> { this.router.navigateByUrl ('/'); });
+        // .then ( ()=> { this.loginPage(); });
   }
   
-  private loginPage() {
-    this.router.navigateByUrl ('/');
-  }
+  // private loginPage() {
+  //   this.router.navigateByUrl ('/');
+  // }
 }
 
 // El código se simplifica mucho si la variable: this.webSocketService.usuario;

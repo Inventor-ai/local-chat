@@ -14,7 +14,7 @@ export class ChatService {
     const payload = {
       // de: 'Lana Rhoades',
       // 43. Reconectar y renombrar usuario en el Socket Server
-      de: this.wsService.usuarioGet().nombre,
+      de: this.wsService.usuarioGet()!.nombre,  // Non-null assertion operator !
       cuerpo: msg
     };
     this.wsService.emitir( MENSAJE_PARA_SALA, payload ); //'mensaje'

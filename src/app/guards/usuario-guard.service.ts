@@ -7,12 +7,13 @@ import { WebSocketService } from '../services/websocket.service';
 })
 export class UsuarioGuard implements CanActivate {
 
-  constructor( public WebSocketService: WebSocketService,
-              private router: Router
-    ) { }
+  constructor( public  WebSocketService: WebSocketService,
+               private router: Router) { }
 
   canActivate() {
-    if (this.WebSocketService.usuarioGet()) {
+    // Fallaba porque en webSocketLogOut no se podía: this.usuario = null;
+    // Se implementó null en la declaración de la propiedad
+    if (this.WebSocketService.usuarioGet()) {  // Video version
         return true;
     } else {
         this.router.navigateByUrl('/');

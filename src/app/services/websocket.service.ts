@@ -28,11 +28,12 @@ export class WebSocketService {
   // Type 'null' is not assignable to type 'UsuarioModel'.ts(2322)
   // =============================================================
 
-  // Encontrado por casualidad! - Doumentar
-  public usuario!: UsuarioModel;
+  // Encontrado por casualidad! - Documentar
+  public usuario!: UsuarioModel | null;
 
   // Own UserList
-  public userList: any[] = [];
+  // public userList: any[] = [];
+  public userList: UsuarioModel[] = [];
 
   constructor( private socket: Socket ) {
               // , private router: Router ) { // 55. Logout - Cierre de sesión (Video) 
@@ -87,7 +88,7 @@ export class WebSocketService {
     return new Promise((resolve, reject) => {
       // this.emitir ('configurar-usuario', nombre, ( resp: any ) => {  // Envía el nombre como string
    // this.emitir ('configurar-usuario', { nombre }, ( resp: any ) => { // Envía el nombre como objeto
-      this.emitir (CLIENTE_CHAT_CFG, { nombre }, ( resp: any ) => { // Envía el nombre como objeto
+      this.emitir ( CLIENTE_CHAT_CFG, { nombre }, ( resp: any ) => { // Envía el nombre como objeto
         // Cuando se dispara la respuesta -resp- del servidor, quiere decir que el socket lo recibió y
         // lo configuró, pero dependiendo de lo que se responda el servidor, que igual puede ser falso, 
         // podemos mandar un error. Si bien se asume que la respuesta es verdadera, esta estructura
@@ -100,8 +101,8 @@ export class WebSocketService {
             // this.usuario.nombre = nombre;
             this.storageSave();
             this.userList = resp.lst;
-            console.log('Server says: ', resp.msg );
-            console.log('I am:', nombre);
+            // console.log('Server says: ', resp.msg );
+            // console.log('I am:', nombre);
             resolve ( () => { // Investigar cuándo se usa así
             });
         } else {    // false
@@ -138,7 +139,8 @@ export class WebSocketService {
   // Own version with some improvements and test implementing Promise
   public webSocketLogOut() {
     return new Promise ( (resolve, reject ) => {      
-      this.usuario.nombre = '';                            // Own temp solutions
+      // this.usuario.nombre = '';                            // Own temp solutions
+      this.usuario = null;  // Video line
       localStorage.removeItem ( USERkey );
       const nombre = 'sin-nombre';                         // Own 1/2
       this.emitir (CLIENTE_CHAT_CFG, { nombre }, ()=>{});  // Own 2/2
@@ -155,8 +157,10 @@ export class WebSocketService {
     localStorage.setItem ( USERkey, JSON.stringify (this.usuario) );
   }
 
-  storageRead(): boolean {
-    // Video version 6/7
+  // Implementado para subsanar que en webSocketLogOut no se puede: this.usuario = null;           (1/3)
+  // storageRead(): boolean {
+  storageRead() { // Video versión 
+    // Video Angular 7
     // if ( localStorage.getItem(USERkey)) {
     //     this.usuario = JSON.parse ( localStorage.getItem(USERkey) );    // Error pero en Video Ok
     //     this.usuario = JSON.parse ( localStorage.getItem(USERkey) || '');  // Funciona pero no Ok
@@ -165,13 +169,13 @@ export class WebSocketService {
     const userStored = localStorage.getItem( USERkey );
     if ( userStored ) {
       this.usuario = JSON.parse ( userStored );
-      this.webSocketLogin ( this.usuario.nombre );
-      return true;
+      this.webSocketLogin ( this.usuario!.nombre ); // Non-null assertion operator !
+      // return true;  // Implementado para subsanar que en logout no se puede: this.usuario = null;  (2/3)
       // this.loginWebSocket ( this.usuario.nombre );
     }
     else {
       console.log('¡Usuario sin registrar!');
-      return false;
+      // return false;  // Implementado para subsanar que en logout no se puede: this.usuario = null; (3/3)
     }
   }
 
