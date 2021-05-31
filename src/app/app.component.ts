@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { WebSocketService } from './services/websocket.service';
+// import { WebSocketService } from './services/websocket.service';
 import { ChatService } from './services/chat.service';
 import { Subscription } from 'rxjs';
 
@@ -12,7 +12,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'basico';
   msgPrivSubs!: Subscription;
   
-  constructor ( public wsService: WebSocketService, 
+  constructor ( // public wsService: WebSocketService, // ¿Qué hace esto?
                 public chatService: ChatService ) {}
 
   ngOnInit (): void {

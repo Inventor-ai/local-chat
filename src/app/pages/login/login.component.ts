@@ -17,8 +17,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   ingresar() {
     if (this.nombre.trim().length === 0) {
@@ -27,7 +26,7 @@ export class LoginComponent implements OnInit {
         return;
     }
     console.log('Login - Ingresar', this.nombre );
-    this.webSocketService.loginWebSocket ( this.nombre )
+    this.webSocketService.webSocketLogin( this.nombre )
     // 41. Mantener el usuario a pesar de las reconexiones
     // En respuesta a esta promesa, que no devuelve nada, pero puede retornar lo que sea
         .then ( ()=> { // Si resolve
@@ -35,7 +34,7 @@ export class LoginComponent implements OnInit {
           // this.router.navigateByUrl(`/mensajes/${this.nombre}`);
         })
         .catch( ()=> { // Si reject
-          // 
+          console.log('Inicio de sesión rechazada');
         });
     
   }

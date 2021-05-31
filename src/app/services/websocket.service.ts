@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 // 24. Angular - Conectarnos a nuestro servidor
 import { Socket } from 'ngx-socket-io';
+import { CLIENTE_CHAT_CFG } from '../config/socket.events';
 import { UsuarioModel } from '../models/usuario.model';
+// import { Router } from '@angular/router';  // 55. Logout - Cierre de sesión
+//          Moved to mensajes.component.ts for coding improve
 
 const USERkey = 'usuario'; // Entrada para el localStorage
 
@@ -32,6 +35,8 @@ export class WebSocketService {
   public userList: any[] = [];
 
   constructor( private socket: Socket ) {
+              // , private router: Router ) { // 55. Logout - Cierre de sesión (Video) 
+              //  Moved to mensajes.component.ts for coding improve
     this.storageRead();
     this.checkServerStatus();
     // 38. Nombre de usuario y login template
@@ -41,12 +46,13 @@ export class WebSocketService {
 
   checkServerStatus() {
     this.socket.on('connect', ()=> {
-      // console.log('Servidor conectado');
+      console.log('Servidor conectado');
+      this.storageRead();
       this.isServerOnLine = true;
     });
 
     this.socket.on('disconnect', ()=> {
-      // console.log('Servidor desconectado');
+      console.log('Servidor desconectado');
       this.isServerOnLine = false;
     });
   }
@@ -75,12 +81,13 @@ export class WebSocketService {
     });
   }
 */
-  loginWebSocket ( nombre: string ) {
+  webSocketLogin ( nombre: string ) {
     // console.log('Configurando usuario: ', nombre );
     // 41. Mantener el usuario a pesar de las reconexiones
     return new Promise((resolve, reject) => {
       // this.emitir ('configurar-usuario', nombre, ( resp: any ) => {  // Envía el nombre como string
-      this.emitir ('configurar-usuario', { nombre }, ( resp: any ) => { // Envía el nombre como objeto
+   // this.emitir ('configurar-usuario', { nombre }, ( resp: any ) => { // Envía el nombre como objeto
+      this.emitir (CLIENTE_CHAT_CFG, { nombre }, ( resp: any ) => { // Envía el nombre como objeto
         // Cuando se dispara la respuesta -resp- del servidor, quiere decir que el socket lo recibió y
         // lo configuró, pero dependiendo de lo que se responda el servidor, que igual puede ser falso, 
         // podemos mandar un error. Si bien se asume que la respuesta es verdadera, esta estructura
@@ -89,22 +96,55 @@ export class WebSocketService {
         console.log('resp:', resp);
         if ( resp.ok ) { // true
               // En el video, pero esta inicialización se hizo en el constructor
-              this.usuario = new UsuarioModel ( nombre );
-              // this.usuario.nombre = nombre;
-              this.storageSave();
-              this.userList = resp.lst;
-              console.log('Server says: ', resp.msg );
-              console.log('I am:', nombre);
+            this.usuario = new UsuarioModel ( nombre );
+            // this.usuario.nombre = nombre;
+            this.storageSave();
+            this.userList = resp.lst;
+            console.log('Server says: ', resp.msg );
+            console.log('I am:', nombre);
             resolve ( () => { // Investigar cuándo se usa así
             });
         } else {    // false
             console.log('Server says: ', resp);
             console.log("Can't initiate server session for: ", nombre );
-            reject ( () => {
+            reject ( () => { // Investigar cuándo se usa así
             });
         }
       });
     });
+  }
+
+  // 55. Logout - Cierre de sesión
+  /*
+  // Video version with a lot of errors
+  public webSocketLogOut() {
+    // Error: Type 'null' is not assignable to type 'UsuarioModel'.ts(2322) 
+    // this.usuario = null;  // Video line
+    localStorage.removeItem ( USERkey );
+    const payload = { nombre : 'sin-nombre' };         // Video 1/2 - Ok
+    this.emitir ( CLIENTE_CHAT_CFG, payload, ()=>{} ); // Video 2/2 - Ok
+    // this.router.navigateByUrl ('/');                // Video Proposal
+  }
+  // ==================
+  // No promise version
+  public webSocketLogOutX() {
+    this.usuario.nombre = '';                            // Own temp solutions
+    localStorage.removeItem ( USERkey );
+    const nombre = 'sin-nombre';                         // Own 1/2
+    this.emitir (CLIENTE_CHAT_CFG, { nombre }, ()=>{});  // Own 2/2
+    // this.router.navigateByUrl ('/');                  // Moved to mensajes.component.ts
+  }
+  */
+  // Own version with some improvements and test implementing Promise
+  public webSocketLogOut() {
+    return new Promise ( (resolve, reject ) => {      
+      this.usuario.nombre = '';                            // Own temp solutions
+      localStorage.removeItem ( USERkey );
+      const nombre = 'sin-nombre';                         // Own 1/2
+      this.emitir (CLIENTE_CHAT_CFG, { nombre }, ()=>{});  // Own 2/2
+      // this.router.navigateByUrl ('/');                  // Moved to mensajes.component.ts
+      resolve( ()=>{ alert('resolved')} );
+    })
   }
 
   public usuarioGet() {
@@ -112,10 +152,10 @@ export class WebSocketService {
   }
 
   storageSave() {
-    localStorage.setItem (USERkey, JSON.stringify (this.usuario) );
+    localStorage.setItem ( USERkey, JSON.stringify (this.usuario) );
   }
 
-  storageRead() {
+  storageRead(): boolean {
     // Video version 6/7
     // if ( localStorage.getItem(USERkey)) {
     //     this.usuario = JSON.parse ( localStorage.getItem(USERkey) );    // Error pero en Video Ok
@@ -125,10 +165,13 @@ export class WebSocketService {
     const userStored = localStorage.getItem( USERkey );
     if ( userStored ) {
       this.usuario = JSON.parse ( userStored );
-      this.loginWebSocket ( this.usuario.nombre );
+      this.webSocketLogin ( this.usuario.nombre );
+      return true;
+      // this.loginWebSocket ( this.usuario.nombre );
     }
     else {
       console.log('¡Usuario sin registrar!');
+      return false;
     }
   }
 

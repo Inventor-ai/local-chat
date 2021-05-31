@@ -1,6 +1,23 @@
 <h1>Usuarios</h1>
 <hr>
+<!-- Use with emmet extension pressing <tab> / <enter>
+ul.list-group>li.list-group-item
+ -->
+                  <!-- El pipe async abre el Observable y da acceso a su contenido -->
+<!-- 
+<ul class="list-group"> 
+    <li class="list-group-item" *ngFor="let usuario of usuariosActivosObs | async">
+        {{ usuario.nombre }}
+        <span class="badge badge-primary">{{ usuario.sala }}</span>
+        <span class="badge badge-info">{{ usuario.id }}</span>
+    </li>
+</ul>
+<br> -->
 <!-- div#chat-usuarios>li -->
 <div id="chat-usuarios">
-    <li class="list-group-item" *ngFor="let usr of usrs"> {{ usr.nombre }} </li>
+    <li class="list-group-item" *ngFor="let usr of usuariosActivosObs | async">
+        {{ usr.nombre }} 
+        <span class="badge badge-primary">{{ usr.sala }}</span>
+        <span class="badge badge-info">{{ usr.id }}</span>
+    </li>
 </div>

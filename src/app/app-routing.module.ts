@@ -7,9 +7,9 @@ import { UsuarioGuard } from './guards/usuario-guard.service';
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
   // { path: 'mensajes', component: MensajesComponent },     // Antes del Guard
-  { path: 'mensajes', component: MensajesComponent, canActivate: [ UsuarioGuard] },
-  { path: '**', redirectTo: '' }  // Own Ok
-  // { path: '**', component: LoginComponent }
+  { path: 'mensajes', component: MensajesComponent, canActivate: [ UsuarioGuard ] },
+  // { path: '**', redirectTo: '' }  // Own Ok
+  { path: '**', component: LoginComponent }
 ];
 
 @NgModule({

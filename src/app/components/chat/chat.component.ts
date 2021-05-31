@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit, OnDestroy {
            setTimeout(() => { // Desplaza la lista de mensajes hasta abajo
               this.elemento.scrollTop = this.elemento.scrollHeight;
            }, 50);
-           console.log(msg);
+          //  console.log(msg);
         });
   }
 

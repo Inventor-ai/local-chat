@@ -1,42 +1,30 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-// import { Subscription } from 'rxjs';
-// import { WebSocketService } from '../../services/websocket.service';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-lista-usuarios',
   templateUrl: './lista-usuarios.component.html',
   styleUrls: ['./lista-usuarios.component.css']
 })
-export class ListaUsuariosComponent implements OnInit, OnDestroy {
-  
-  // elem: HTMLElement;
-  elem: any;
-  usrs: any[] = [];
-  // lstS: Subscription = new Subscription();
-  constructor( ) { 
-  // constructor( private wSocketService: WebSocketService ) { 
-    //  this.elem = new HTMLElement().DOCUMENT_NODE;
-    this.usrs = [
-      {'nombre': 'Uno'}, 
-      {'nombre': 'Dos'}, 
-      {'nombre': 'Tres'}
-    ];
+
+export class ListaUsuariosComponent implements OnInit {
+
+  // 53. Componente de Lista de Usuarios
+  // En lugar de <any>, debería ser de tipo Usuario
+  // usuariosActivosObs: Observable<any>;  // Produce error de inicialización de la variable (Angular 12)
+  usuariosActivosObs!: Observable<any>;    // Own: Fix no constructor initialization error
+
+  constructor( public chatService: ChatService ) { 
+    this.usuariosActivosObs = this.chatService.clientesActivosGet();
   }
 
   ngOnInit(): void {
-    // this.elem = document.getElementById('chat-usuarios');
-    // this.lstS = this.wSocketService.retriveUsersList()
-    //                 .subscribe ( ( lista: any ) => {
-    //                   console.log('lista usuarios', lista);
-    //                    this.usrs = lista;
-    //                 });
-    // setTimeout ( ()=> {
-    //    this.elem.scrollTop = this.elem.scrollHeight;
-    // }, 50);
-  }
+    // Own: 
+    // this.usuariosActivosObs = this.chatService.clientesActivosGet(); // Video
 
-  ngOnDestroy() {
-    // this.lstS.unsubscribe();
+    // 54. Tarea - Obtener lista de usuarios - socket
+    this.chatService.clientesOnChatGet();
   }
 
 }
